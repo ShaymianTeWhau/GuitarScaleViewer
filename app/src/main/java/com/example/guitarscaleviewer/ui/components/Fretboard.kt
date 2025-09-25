@@ -23,7 +23,9 @@ fun Fretboard(
     numStrings: Int = 6,
     numFrets: Int = 15,
     standardFretMarkers: Set<Int> = setOf(3, 5, 7, 9, 12, 15, 17, 19, 21, 24),
-    specialFretMarkers: Set<Int> = setOf(12, 24)
+    specialFretMarkers: Set<Int> = setOf(12, 24),
+    minStringWidth: Float = 1f,
+    maxStringWidth: Float = 4f
 ) {
 
     val fretStroke = with(LocalDensity.current) { 1.dp.toPx() }
@@ -98,14 +100,12 @@ fun Fretboard(
         // draw strings
         val stringMargin = canvasHeight * 0.08f
         val stringDistance = (canvasHeight - (stringMargin*2)) / (numStrings - 1)
-        val minStroke = 1f
-        val maxStroke = 4f
         for (s in 0 until numStrings){
             val y = stringMargin + s * stringDistance
 
             // simulate string size differences
             val fraction = s.toFloat() / (numStrings - 1)
-            val stroke = minStroke + (maxStroke - minStroke) * fraction
+            val stroke = minStringWidth + (maxStringWidth - minStringWidth) * fraction
 
             drawLine(
                 color = Color(0xFF4A4A4A),
@@ -141,17 +141,17 @@ fun FretboardPreview8(){
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreviewBass4(){
-    Fretboard(numStrings = 4)
+    Fretboard(numStrings = 4, minStringWidth = 4f, maxStringWidth = 8f)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreviewBass5(){
-    Fretboard(numStrings = 5)
+    Fretboard(numStrings = 5, minStringWidth = 4f, maxStringWidth = 8f)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreviewBass6(){
-    Fretboard(numStrings = 6)
+    Fretboard(numStrings = 6, minStringWidth = 4f, maxStringWidth = 8f)
 }
