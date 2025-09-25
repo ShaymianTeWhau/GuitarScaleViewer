@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@Preview(showBackground = true)
 @Composable
 fun Fretboard(
     modifier: Modifier = Modifier
@@ -119,4 +118,40 @@ fun Fretboard(
         // draw notes
 
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FretboardPreview6(){
+    Fretboard(numStrings = 6)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FretboardPreview7(){
+    Fretboard(numStrings = 7)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FretboardPreview8(){
+    Fretboard(numStrings = 8)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FretboardPreviewBass4(){
+    Fretboard(numStrings = 4)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FretboardPreviewBass5(){
+    Fretboard(numStrings = 5)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FretboardPreviewBass6(){
+    Fretboard(numStrings = 6)
 }
