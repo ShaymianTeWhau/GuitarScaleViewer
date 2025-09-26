@@ -12,9 +12,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.guitarscaleviewer.model.FretNote
+import org.w3c.dom.Text
 
 @Composable
 fun Fretboard(
@@ -29,7 +35,7 @@ fun Fretboard(
     maxStringWidth: Float = 4f,
     fretNotes: Set<FretNote>
 ) {
-
+    val textMeasurer = rememberTextMeasurer()
     val fretStroke = with(LocalDensity.current) { 1.dp.toPx() }
     val markerRadius = with(LocalDensity.current) { 5.dp.toPx() }
 
@@ -128,10 +134,43 @@ fun Fretboard(
                 x = fretboardStartX
             }
             val y = stringPositionsY.elementAt(fretNote.string - 1)
+
+            val circleRadius = fretWidth / 4
+            val borderWidth = 2f
+
+            // draw outline
             drawCircle(
-                color = Color.Gray,
-                radius = fretWidth / 4,
+                color = fretNote.borderColor,
+                radius = circleRadius + borderWidth,
                 center = Offset(x, y)
+            )
+            // draw background
+            drawCircle(
+                color = fretNote.backgroundColor,
+                radius = circleRadius,
+                center = Offset(x, y)
+            )
+
+            // setup draw label
+            val textStyle = TextStyle(
+                color = fretNote.textColor,
+                fontSize = 10.sp
+            )
+            val measuredText = textMeasurer.measure(
+                text = fretNote.note,
+                style = textStyle
+            )
+            val textWidth = measuredText.size.width
+            val textHeight = measuredText.size.height
+            val textX = x - (textWidth / 2)
+            val textY = y - (textHeight / 2)
+
+            // draw label
+            drawText(
+                textMeasurer = textMeasurer,
+                text = fretNote.note,
+                topLeft = Offset(textX, textY),
+                style = textStyle
             )
         }
     }
