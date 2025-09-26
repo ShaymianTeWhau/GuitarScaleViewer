@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.guitarscaleviewer.model.FretNote
 
 @Composable
 fun Fretboard(
@@ -25,7 +26,8 @@ fun Fretboard(
     standardFretMarkers: Set<Int> = setOf(3, 5, 7, 9, 12, 15, 17, 19, 21, 24),
     specialFretMarkers: Set<Int> = setOf(12, 24),
     minStringWidth: Float = 1f,
-    maxStringWidth: Float = 4f
+    maxStringWidth: Float = 4f,
+    fretNotes: Set<FretNote>
 ) {
 
     val fretStroke = with(LocalDensity.current) { 1.dp.toPx() }
@@ -55,15 +57,16 @@ fun Fretboard(
 
         val fretboardStartX = nutToFretWidthRatio * fretWidth
         // draw fret bars
+        val fretPositionsX = mutableSetOf<Float>()
         for (f in 0 until numFrets) {
-            var x = f * fretWidth + fretboardStartX
+            val x = f * fretWidth + fretboardStartX // save fret positions for later when drawing FretNotes
+            fretPositionsX.add(x)
             drawLine(
                 color = Color(0xFF8C8C8C),
                 start = Offset(x, 0f),
                 end = Offset(x, size.height),
                 strokeWidth = fretStroke
             )
-
         }
 
         // draw fret markers
@@ -94,14 +97,15 @@ fun Fretboard(
                     center = Offset(x, centerY)
                 )
             }
-
         }
 
         // draw strings
         val stringMargin = canvasHeight * 0.08f
         val stringDistance = (canvasHeight - (stringMargin*2)) / (numStrings - 1)
+        val stringPositionsY = mutableSetOf<Float>() // save string positions for later when drawing FretNotes
         for (s in 0 until numStrings){
             val y = stringMargin + s * stringDistance
+            stringPositionsY.add(y)
 
             // simulate string size differences
             val fraction = s.toFloat() / (numStrings - 1)
@@ -116,42 +120,64 @@ fun Fretboard(
         }
 
         // draw notes
+        for(fretNote in fretNotes) {
+            if((fretNote.string) > numStrings) continue
 
+            var x = fretPositionsX.elementAt(fretNote.fret) - fretWidth / 2
+            if(fretNote.fret == 0){
+                x = fretboardStartX
+            }
+            val y = stringPositionsY.elementAt(fretNote.string - 1)
+            drawCircle(
+                color = Color.Gray,
+                radius = fretWidth / 4,
+                center = Offset(x, y)
+            )
+        }
     }
 }
+
+val exampleFretNotes = setOf(
+    FretNote(fret = 8, string = 6, note = "C"),
+    FretNote(fret = 10, string = 5, note = "G"),
+    FretNote(fret = 9, string = 4, note = "E"),
+    FretNote(fret = 9, string = 3, note = "B"),
+    FretNote(fret = 8, string = 2, note = "E"),
+    FretNote(fret = 8, string = 1, note = "C")
+)
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreview6(){
-    Fretboard(numStrings = 6)
+    Fretboard(numStrings = 6, fretNotes = exampleFretNotes)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreview7(){
-    Fretboard(numStrings = 7)
+    Fretboard(numStrings = 7, fretNotes = exampleFretNotes)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreview8(){
-    Fretboard(numStrings = 8)
+    Fretboard(numStrings = 8, fretNotes = exampleFretNotes)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreviewBass4(){
-    Fretboard(numStrings = 4, minStringWidth = 4f, maxStringWidth = 8f)
+    Fretboard(numStrings = 4, minStringWidth = 4f, maxStringWidth = 8f, fretNotes = exampleFretNotes)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreviewBass5(){
-    Fretboard(numStrings = 5, minStringWidth = 4f, maxStringWidth = 8f)
+    Fretboard(numStrings = 5, minStringWidth = 4f, maxStringWidth = 8f, fretNotes = exampleFretNotes)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreviewBass6(){
-    Fretboard(numStrings = 6, minStringWidth = 4f, maxStringWidth = 8f)
+    Fretboard(numStrings = 6, minStringWidth = 4f, maxStringWidth = 8f, fretNotes = exampleFretNotes)
 }

@@ -1,4 +1,7 @@
 package com.example.guitarscaleviewer.model
 
-class FretNote {
-}
+data class FretNote(
+    val fret: Int,
+    val string: Int,
+    val note: String
+)
