@@ -12,7 +12,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -20,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.guitarscaleviewer.model.FretNote
-import org.w3c.dom.Text
 
 @Composable
 fun Fretboard(
@@ -33,6 +31,7 @@ fun Fretboard(
     specialFretMarkers: Set<Int> = setOf(12, 24),
     minStringWidth: Float = 1f,
     maxStringWidth: Float = 4f,
+    showScaleNum: Boolean = false,
     fretNotes: Set<FretNote>
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -152,12 +151,13 @@ fun Fretboard(
             )
 
             // setup draw label
+            val labelText = if(showScaleNum) fretNote.scaleNum else fretNote.note
             val textStyle = TextStyle(
                 color = fretNote.textColor,
                 fontSize = 10.sp
             )
             val measuredText = textMeasurer.measure(
-                text = fretNote.note,
+                text = labelText,
                 style = textStyle
             )
             val textWidth = measuredText.size.width
@@ -168,7 +168,7 @@ fun Fretboard(
             // draw label
             drawText(
                 textMeasurer = textMeasurer,
-                text = fretNote.note,
+                text = labelText,
                 topLeft = Offset(textX, textY),
                 style = textStyle
             )
@@ -177,18 +177,18 @@ fun Fretboard(
 }
 
 val exampleFretNotes = setOf(
-    FretNote(fret = 8, string = 6, note = "C"),
-    FretNote(fret = 10, string = 5, note = "G"),
-    FretNote(fret = 9, string = 4, note = "E"),
-    FretNote(fret = 9, string = 3, note = "B"),
-    FretNote(fret = 8, string = 2, note = "E"),
-    FretNote(fret = 8, string = 1, note = "C")
+    FretNote(fret = 8, string = 6, note = "C", scaleNum = "1"),
+    FretNote(fret = 10, string = 5, note = "G", scaleNum = "5"),
+    FretNote(fret = 9, string = 4, note = "E", scaleNum = "3"),
+    FretNote(fret = 9, string = 3, note = "B", scaleNum = "7"),
+    FretNote(fret = 8, string = 2, note = "E", scaleNum = "3"),
+    FretNote(fret = 8, string = 1, note = "C", scaleNum = "1")
 )
 
 @Preview(showBackground = true)
 @Composable
 fun FretboardPreview6(){
-    Fretboard(numStrings = 6, fretNotes = exampleFretNotes)
+    Fretboard(numStrings = 6, fretNotes = exampleFretNotes, showScaleNum = true)
 }
 
 @Preview(showBackground = true)
