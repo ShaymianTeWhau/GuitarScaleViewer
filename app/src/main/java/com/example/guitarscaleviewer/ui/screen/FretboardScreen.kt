@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.ui.components.exampleFretNotes
+import com.example.guitarscaleviewer.viewmodel.FretboardUiState
 import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,12 +53,16 @@ fun AppBar(){
 // viewModel aware composable
 @Composable
 fun FretboardScreen(viewModel: FretboardViewModel){
-    FretboardScreen()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    FretboardScreen(
+        uiState = uiState
+    )
 }
 
 // viewModel unaware composable
 @Composable
-fun FretboardScreen() {
+fun FretboardScreen(uiState: FretboardUiState) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -69,12 +75,18 @@ fun FretboardScreen() {
                 .fillMaxSize()
                 .padding(innerPadding)
                 .aspectRatio(16f / 5f),
-            numStrings = 6,
+            numStrings = uiState.numStrings,
+            numFrets = uiState.numFrets,
             fretNotes = exampleFretNotes,
             showScaleNum = true
         )
     }
 }
+
+// Previews
+val previewUiState: FretboardUiState = FretboardUiState(
+    numStrings = 6
+)
 
 @Preview(
     name = "Fretboard Horizontal",
@@ -84,7 +96,7 @@ fun FretboardScreen() {
 )
 @Composable
 fun FretboardScreenPreviewHorizontal() {
-    FretboardScreen()
+    FretboardScreen(previewUiState)
 }
 
 @Preview(
@@ -95,6 +107,6 @@ fun FretboardScreenPreviewHorizontal() {
 )
 @Composable
 fun FretboardScreenPreviewVertical() {
-    FretboardScreen()
+    FretboardScreen(previewUiState)
 }
 
