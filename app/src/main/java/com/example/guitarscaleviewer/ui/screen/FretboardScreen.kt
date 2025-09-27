@@ -23,6 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
+import com.example.guitarscaleviewer.model.Interval
+import com.example.guitarscaleviewer.model.IntervalModifier
+import com.example.guitarscaleviewer.model.createScale
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.viewmodel.FretboardUiState
 import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
@@ -87,7 +90,19 @@ fun FretboardScreen(
 
 // Previews
 val previewUiState: FretboardUiState = FretboardUiState(
-    numStrings = 6
+    numStrings = 6,
+    fretNotes = createScale(
+        tonicNote = "A",
+        intervals = setOf(
+            Interval(1),
+            Interval(2),
+            Interval(3, IntervalModifier.FLAT),
+            Interval(4),
+            Interval(5),
+            Interval(6, IntervalModifier.FLAT),
+            Interval(7, IntervalModifier.FLAT),
+        )
+    )
 )
 
 @Preview(
