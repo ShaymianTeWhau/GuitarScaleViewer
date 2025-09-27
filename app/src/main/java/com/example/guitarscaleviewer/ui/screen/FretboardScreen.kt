@@ -24,20 +24,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.ui.components.Fretboard
-import com.example.guitarscaleviewer.ui.components.exampleFretNotes
 import com.example.guitarscaleviewer.viewmodel.FretboardUiState
 import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(){
-    var showScaleNumbers by remember{ mutableStateOf(false) }
+fun AppBar(uiState: FretboardUiState, onToggleShowScaleNum: () -> Unit){
     TopAppBar(
         title = { Text("GSViewer") },
         actions = {
-            IconButton(onClick = { showScaleNumbers = !showScaleNumbers }) {
+            IconButton(onClick = onToggleShowScaleNum) {
                 Icon(
-                    painter = if(showScaleNumbers) {
+                    painter = if(uiState.showScaleNum) {
                         painterResource(id = R.drawable.roman1)
                     } else painterResource(id = R.drawable.quarter_note),
                     contentDescription = "Toggle notes/numbers"
@@ -56,17 +54,21 @@ fun FretboardScreen(viewModel: FretboardViewModel){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     FretboardScreen(
-        uiState = uiState
+        uiState = uiState,
+        onToggleShowScaleNum = { viewModel.toggleShowScaleNum() }
     )
 }
 
 // viewModel unaware composable
 @Composable
-fun FretboardScreen(uiState: FretboardUiState) {
+fun FretboardScreen(
+    uiState: FretboardUiState,
+    onToggleShowScaleNum: () -> Unit = {}
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            AppBar()
+            AppBar(uiState = uiState, onToggleShowScaleNum = onToggleShowScaleNum)
         },
         contentWindowInsets = WindowInsets.safeDrawing
     ){ innerPadding ->
@@ -77,8 +79,8 @@ fun FretboardScreen(uiState: FretboardUiState) {
                 .aspectRatio(16f / 5f),
             numStrings = uiState.numStrings,
             numFrets = uiState.numFrets,
-            fretNotes = exampleFretNotes,
-            showScaleNum = true
+            fretNotes = uiState.fretNotes,
+            showScaleNum = uiState.showScaleNum
         )
     }
 }
