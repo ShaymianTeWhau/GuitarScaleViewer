@@ -1,9 +1,83 @@
 package com.example.guitarscaleviewer.ui.screen
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.guitarscaleviewer.ui.components.Fretboard
+import com.example.guitarscaleviewer.ui.components.exampleFretNotes
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AppBar(){
+    TopAppBar(
+        title = { Text("GSViewer") },
+        actions = {
+            IconButton(onClick = {  }) {
+                Icon(Icons.Default.Star, contentDescription = "temp")
+            }
+        },
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color.LightGray
+        )
+    )
+}
 
 @Composable
 fun FretboardScreen() {
-    Text("Hello Fretboard")
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            AppBar()
+        },
+        contentWindowInsets = WindowInsets.safeDrawing
+    ){ innerPadding ->
+        Fretboard(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .aspectRatio(16f / 5f),
+            numStrings = 6,
+            fretNotes = exampleFretNotes,
+            showScaleNum = true
+        )
+    }
 }
+
+@Preview(
+    name = "Fretboard Horizontal",
+    showBackground = true,
+    widthDp = 800,
+    heightDp = 360
+)
+@Composable
+fun FretboardScreenPreviewHorizontal() {
+    FretboardScreen()
+}
+
+@Preview(
+    name = "Fretboard Vertical",
+    showBackground = true,
+    widthDp = 360,
+    heightDp = 800
+)
+@Composable
+fun FretboardScreenPreviewVertical() {
+    FretboardScreen()
+}
+
