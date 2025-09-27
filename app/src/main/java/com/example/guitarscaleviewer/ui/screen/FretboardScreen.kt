@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.ui.components.exampleFretNotes
+import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,9 +48,15 @@ fun AppBar(){
     )
 }
 
+// viewModel aware composable
+@Composable
+fun FretboardScreen(viewModel: FretboardViewModel){
+    FretboardScreen()
+}
+
+// viewModel unaware composable
 @Composable
 fun FretboardScreen() {
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
