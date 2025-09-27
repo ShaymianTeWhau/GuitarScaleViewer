@@ -1,26 +1,35 @@
 package com.example.guitarscaleviewer.ui.screen
 
+import android.app.Dialog
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.Interval
@@ -32,10 +41,17 @@ import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(uiState: FretboardUiState, onToggleShowScaleNum: () -> Unit){
+fun AppBar(
+    uiState: FretboardUiState,
+    onToggleShowScaleNum: () -> Unit,
+    onShowKeyPicker: () -> Unit
+){
     TopAppBar(
         title = { Text("GSViewer") },
         actions = {
+            IconButton(onClick =  onShowKeyPicker) {
+                Text(uiState.tonicNote)
+            }
             IconButton(onClick = onToggleShowScaleNum) {
                 Icon(
                     painter = if(uiState.showScaleNum) {
@@ -49,6 +65,32 @@ fun AppBar(uiState: FretboardUiState, onToggleShowScaleNum: () -> Unit){
             containerColor = Color.LightGray
         )
     )
+}
+
+@Composable
+fun keyPicker(
+    visible: Boolean = false,
+    onDismiss: () -> Unit
+){
+    if (!visible) return
+
+    Dialog(onDismissRequest = {}) {
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            tonalElevation = 6.dp
+        ){
+            Column(
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .heightIn(min = 0.dp, max = 520.dp) // keeps it from growing off-screen
+            ){
+                TextButton(onClick = onDismiss) {
+                    Text("Cancel")
+                }
+            }
+        }
+    }
 }
 
 // viewModel aware composable
@@ -68,10 +110,15 @@ fun FretboardScreen(
     uiState: FretboardUiState,
     onToggleShowScaleNum: () -> Unit = {}
 ) {
+    var showKeyPicker by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            AppBar(uiState = uiState, onToggleShowScaleNum = onToggleShowScaleNum)
+            AppBar(
+                uiState = uiState,
+                onToggleShowScaleNum = onToggleShowScaleNum,
+                onShowKeyPicker = {showKeyPicker = true}
+            )
         },
         contentWindowInsets = WindowInsets.safeDrawing
     ){ innerPadding ->
@@ -86,13 +133,14 @@ fun FretboardScreen(
             showScaleNum = uiState.showScaleNum
         )
     }
+    keyPicker(visible = showKeyPicker, onDismiss = { showKeyPicker = false})
 }
 
 // Previews
 val previewUiState: FretboardUiState = FretboardUiState(
     numStrings = 6,
     fretNotes = createScale(
-        tonicNote = "A",
+        tonicNote = "A#",
         intervals = setOf(
             Interval(1),
             Interval(2),
