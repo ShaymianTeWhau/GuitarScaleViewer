@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,20 +16,32 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.ui.components.exampleFretNotes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(){
+    var showScaleNumbers by remember{ mutableStateOf(false) }
     TopAppBar(
         title = { Text("GSViewer") },
         actions = {
-            IconButton(onClick = {  }) {
-                Icon(Icons.Default.Star, contentDescription = "temp")
+            IconButton(onClick = { showScaleNumbers = !showScaleNumbers }) {
+                Icon(
+                    painter = if(showScaleNumbers) {
+                        painterResource(id = R.drawable.roman1)
+                    } else painterResource(id = R.drawable.quarter_note),
+                    contentDescription = "Toggle notes/numbers"
+                )
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
