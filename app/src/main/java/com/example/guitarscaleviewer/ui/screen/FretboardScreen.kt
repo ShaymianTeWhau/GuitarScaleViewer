@@ -14,7 +14,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -44,15 +46,24 @@ import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
 @Composable
 fun AppBar(
     uiState: FretboardUiState,
-    onToggleShowScaleNum: () -> Unit,
-    onShowKeyPicker: () -> Unit
+    onShowScalePicker: () -> Unit,
+    onShowKeyPicker: () -> Unit,
+    onToggleShowScaleNum: () -> Unit
 ){
     TopAppBar(
         title = { Text("GSViewer") },
         actions = {
-            IconButton(onClick =  onShowKeyPicker) {
+            // scale picker button
+            OutlinedButton (
+                onClick = onShowScalePicker,
+            ) {
+                Text("scale name")
+            }
+            // key picker button
+            OutlinedButton(onClick =  onShowKeyPicker) {
                 Text(uiState.tonicNote)
             }
+            // scale num toggle button
             IconButton(onClick = onToggleShowScaleNum) {
                 Icon(
                     painter = if(uiState.showScaleNum) {
@@ -66,6 +77,36 @@ fun AppBar(
             containerColor = Color.LightGray
         )
     )
+}
+
+@Composable
+fun scalePicker(
+    visible: Boolean = false,
+    onDismiss: () -> Unit,
+    onScalePress: (String) -> Unit
+){
+    if (!visible) return
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ){
+        Surface(
+            modifier = Modifier.fillMaxWidth(0.9f),
+            shape = MaterialTheme.shapes.extraLarge,
+            tonalElevation = 6.dp
+        ){
+            Column(
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .heightIn(min = 0.dp, max = 520.dp)
+            ){
+                TextButton(onClick = onDismiss) {
+                    Text("Cancel")
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -89,7 +130,7 @@ fun keyPicker(
                 Modifier
                     .padding(20.dp)
                     .fillMaxWidth()
-                    .heightIn(min = 0.dp, max = 520.dp) // keeps it from growing off-screen
+                    .heightIn(min = 0.dp, max = 520.dp)
             ){
                 val keys = listOf("C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B")
                 LazyRow(
@@ -135,13 +176,16 @@ fun FretboardScreen(
     onKeyPress: (String) -> Unit = {}
 ) {
     var showKeyPicker by rememberSaveable { mutableStateOf(false) }
+    var showScalePicker by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppBar(
                 uiState = uiState,
-                onToggleShowScaleNum = onToggleShowScaleNum,
-                onShowKeyPicker = {showKeyPicker = true}
+                onShowScalePicker = {showScalePicker = true},
+                onShowKeyPicker = {showKeyPicker = true},
+                onToggleShowScaleNum = onToggleShowScaleNum
             )
         },
         contentWindowInsets = WindowInsets.safeDrawing
@@ -157,6 +201,11 @@ fun FretboardScreen(
             showScaleNum = uiState.showScaleNum
         )
     }
+    scalePicker(
+        visible = showScalePicker,
+        onDismiss = { showScalePicker = false },
+        onScalePress = {}
+    )
     keyPicker(
         visible = showKeyPicker,
         onDismiss = { showKeyPicker = false },
