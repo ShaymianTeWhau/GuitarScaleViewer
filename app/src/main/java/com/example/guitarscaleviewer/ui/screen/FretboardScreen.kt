@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.Interval
@@ -69,12 +72,17 @@ fun AppBar(
 @Composable
 fun keyPicker(
     visible: Boolean = false,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onKeyPress: (String) -> Unit
 ){
     if (!visible) return
 
-    Dialog(onDismissRequest = {}) {
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Surface(
+            modifier = Modifier.fillMaxWidth(0.9f),
             shape = MaterialTheme.shapes.extraLarge,
             tonalElevation = 6.dp
         ){
@@ -84,6 +92,22 @@ fun keyPicker(
                     .fillMaxWidth()
                     .heightIn(min = 0.dp, max = 520.dp) // keeps it from growing off-screen
             ){
+                val keys = listOf("C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B")
+                LazyRow(
+                    Modifier
+                        .fillMaxWidth()
+                ) {
+                    items(keys){ key ->
+                        TextButton(
+                            onClick = { onKeyPress(key); onDismiss()}
+                        ){
+                            Text(
+                                text = key,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
+                }
                 TextButton(onClick = onDismiss) {
                     Text("Cancel")
                 }
@@ -99,7 +123,8 @@ fun FretboardScreen(viewModel: FretboardViewModel){
 
     FretboardScreen(
         uiState = uiState,
-        onToggleShowScaleNum = { viewModel.toggleShowScaleNum() }
+        onToggleShowScaleNum = { viewModel.toggleShowScaleNum() },
+        onKeyPress = viewModel::updateKey
     )
 }
 
@@ -107,7 +132,8 @@ fun FretboardScreen(viewModel: FretboardViewModel){
 @Composable
 fun FretboardScreen(
     uiState: FretboardUiState,
-    onToggleShowScaleNum: () -> Unit = {}
+    onToggleShowScaleNum: () -> Unit = {},
+    onKeyPress: (String) -> Unit = {}
 ) {
     var showKeyPicker by rememberSaveable { mutableStateOf(false) }
     Scaffold(
@@ -132,7 +158,11 @@ fun FretboardScreen(
             showScaleNum = uiState.showScaleNum
         )
     }
-    keyPicker(visible = showKeyPicker, onDismiss = { showKeyPicker = false})
+    keyPicker(
+        visible = showKeyPicker,
+        onDismiss = { showKeyPicker = false },
+        onKeyPress = onKeyPress
+    )
 }
 
 // Previews
@@ -140,7 +170,7 @@ val previewUiState: FretboardUiState = FretboardUiState(
     numStrings = 6,
     numFrets = 12,
     fretNotes = createScale(
-        tonicNote = "A#",
+        tonicNote = "A",
         intervals = setOf(
             Interval(1),
             Interval(2),

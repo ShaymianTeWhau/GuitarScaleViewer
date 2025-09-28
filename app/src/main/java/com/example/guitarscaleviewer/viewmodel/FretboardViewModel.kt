@@ -16,10 +16,12 @@ class FretboardViewModel : ViewModel() {
     )
     init{
         val newNumFrets = 24
+        val newTonicNote = "D"
         uiState.value = FretboardUiState(
-            tonicNote = "A",
+            tonicNote = newTonicNote,
             numFrets = newNumFrets,
             fretNotes = createScale(
+                tonicNote = newTonicNote,
                 totalFrets = newNumFrets,
                 intervals = setOf(
                     Interval(1),
@@ -42,4 +44,5 @@ class FretboardViewModel : ViewModel() {
     }
 
     fun toggleShowScaleNum() = update { it.copy(showScaleNum = !it.showScaleNum) }
+    fun updateKey(key: String) = update { it.copy(tonicNote = key)}
 }
