@@ -2,7 +2,7 @@ package com.example.guitarscaleviewer.model
 
 import androidx.compose.ui.graphics.Color
 
-val MINOR_SCALE_EXAMPLE = createScale(
+val MINOR_SCALE_EXAMPLE = createFretNotesScale(
     tonicNote = "E",
     intervals = setOf(
         Interval(1),
@@ -15,7 +15,7 @@ val MINOR_SCALE_EXAMPLE = createScale(
     )
 )
 
-val MAJOR_SCALE_EXAMPLE = createScale(
+val MAJOR_SCALE_EXAMPLE = createFretNotesScale(
     tonicNote = "C",
     intervals = setOf(
         Interval(1),
@@ -28,7 +28,7 @@ val MAJOR_SCALE_EXAMPLE = createScale(
     )
 )
 
-fun createScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A", "D", "G", "B", "E"), tonicNote:String = "C", intervals:Set<Interval>): Set<FretNote> {
+fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A", "D", "G", "B", "E"), tonicNote:String = "C", intervals:Set<Interval>): Set<FretNote> {
     val fretNoteScale: MutableSet<FretNote> = mutableSetOf()
 
     val useFlats:Boolean = tonicNote.endsWith('b')
@@ -109,4 +109,35 @@ fun createScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A
 
     val result: Set<FretNote> = fretNoteScale
     return result
+}
+
+fun getScales(): List<Scale> {
+    // temp hard coded scales
+    val majorScale = Scale(
+        name = "Ionian (Major)",
+        intervals = setOf(
+            Interval(1),
+            Interval(2),
+            Interval(3),
+            Interval(4),
+            Interval(5),
+            Interval(6),
+            Interval(7)
+        )
+    )
+
+    val minorScale = Scale(
+        name = "Aeolian (minor)",
+        intervals = setOf(
+            Interval(1),
+            Interval(2),
+            Interval(3, IntervalModifier.FLAT),
+            Interval(4),
+            Interval(5),
+            Interval(6, IntervalModifier.FLAT),
+            Interval(7, IntervalModifier.FLAT),
+        )
+    )
+
+    return listOf(majorScale, minorScale)
 }

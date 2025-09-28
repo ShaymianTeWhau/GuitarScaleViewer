@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -38,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.MAJOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.MINOR_SCALE_EXAMPLE
+import com.example.guitarscaleviewer.model.getScales
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.viewmodel.FretboardUiState
 import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
@@ -101,6 +105,19 @@ fun scalePicker(
                     .fillMaxWidth()
                     .heightIn(min = 0.dp, max = 520.dp)
             ){
+                val allScales = getScales()
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(allScales){ scale ->
+                        OutlinedButton(
+                            onClick = {}
+                        ) {
+                            Text(scale.name)
+                        }
+                    }
+                }
                 TextButton(onClick = onDismiss) {
                     Text("Cancel")
                 }
