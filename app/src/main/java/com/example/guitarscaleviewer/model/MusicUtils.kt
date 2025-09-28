@@ -5,7 +5,9 @@ import androidx.compose.ui.graphics.Color
 
 fun createScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A", "D", "G", "B", "E"), tonicNote:String = "C", intervals:Set<Interval>): Set<FretNote> {
     val fretNoteScale: MutableSet<FretNote> = mutableSetOf()
-    val allNotes = setOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+
+    val useFlats:Boolean = tonicNote.endsWith('b')
+    val allNotes = if(useFlats) setOf("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B") else setOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
     val allChromaticIntervals = setOf(
         Interval(1),
         Interval(2, IntervalModifier.FLAT),
