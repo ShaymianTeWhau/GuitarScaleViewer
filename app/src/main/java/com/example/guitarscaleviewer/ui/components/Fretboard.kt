@@ -35,7 +35,6 @@ fun Fretboard(
     showScaleNum: Boolean = false,
     fretNotes: Set<FretNote>
 ) {
-    Log.d(",", "Fretboard composable called")
     val textMeasurer = rememberTextMeasurer()
     val fretStroke = with(LocalDensity.current) { 1.dp.toPx() }
     val markerRadius = with(LocalDensity.current) { 5.dp.toPx() }
@@ -131,8 +130,6 @@ fun Fretboard(
             if((fretNote.string) > numStrings) continue
             if((fretNote.fret) > numFrets) continue
 
-            Log.d(",", "checking x at fret:${fretNote.fret}")
-            Log.d(",", "fretPositionX.size=${fretPositionsX.size}")
             var x = fretPositionsX.elementAt(fretNote.fret) - fretWidth / 2
             if(fretNote.fret == 0){
                 x = fretboardStartX
