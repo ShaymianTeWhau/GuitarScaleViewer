@@ -1,9 +1,11 @@
 package com.example.guitarscaleviewer.model
 
-enum class IntervalModifier{
-    FLAT,
-    NATURAL,
-    SHARP
+import android.util.Log
+
+enum class IntervalModifier(val offset: Int){
+    FLAT(-1),
+    NATURAL(0),
+    SHARP(1)
 }
 
 data class Interval(
@@ -14,23 +16,25 @@ data class Interval(
         if(this === other) return true
         if(other !is Interval) return false
 
-        // normalize this degree
-        var thisDegreeNormalized = if(modifier == IntervalModifier.FLAT) degree - 1 else if(modifier == IntervalModifier.SHARP) degree + 1 else degree
-        if(thisDegreeNormalized == 0) thisDegreeNormalized = 7
-        if(thisDegreeNormalized == 8) thisDegreeNormalized = 1
-
-        // normalize other degree
-        var otherDegreeNormalized = if(modifier == IntervalModifier.FLAT) degree - 1 else if(modifier == IntervalModifier.SHARP) degree + 1 else degree
-        if(otherDegreeNormalized == 0) otherDegreeNormalized = 7
-        if(otherDegreeNormalized == 8) otherDegreeNormalized = 1
-
-        // compare notes
-        return thisDegreeNormalized == otherDegreeNormalized
+        // Convert both intervals to semitones
+        return this.toSemitone() == other.toSemitone()
     }
 
     override fun hashCode(): Int {
-        var result = degree
-        result = 31 * result + modifier.hashCode()
-        return result
+        return toSemitone()
+    }
+
+    private fun toSemitone(): Int {
+        val baseSemitone = when ((degree - 1) % 7 + 1) {
+            1 -> 0  // unison
+            2 -> 2  // major 2nd
+            3 -> 4  // major 3rd
+            4 -> 5  // perfect 4th
+            5 -> 7  // perfect 5th
+            6 -> 9  // major 6th
+            7 -> 11 // major 7th
+            else -> error("Invalid degree: $degree")
+        }
+        return (baseSemitone + modifier.offset + 12) % 12
     }
 }
