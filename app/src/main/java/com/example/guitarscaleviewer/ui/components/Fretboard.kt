@@ -1,6 +1,7 @@
 package com.example.guitarscaleviewer.ui.components
 
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
@@ -34,6 +35,7 @@ fun Fretboard(
     showScaleNum: Boolean = false,
     fretNotes: Set<FretNote>
 ) {
+    Log.d(",", "Fretboard composable called")
     val textMeasurer = rememberTextMeasurer()
     val fretStroke = with(LocalDensity.current) { 1.dp.toPx() }
     val markerRadius = with(LocalDensity.current) { 5.dp.toPx() }
@@ -63,7 +65,7 @@ fun Fretboard(
         val fretboardStartX = nutToFretWidthRatio * fretWidth
         // draw fret bars
         val fretPositionsX = mutableSetOf<Float>()
-        for (f in 0 until numFrets) {
+        for (f in 0 until (numFrets + 1)) { // add 1 because there is a fret 0 as well
             val x = f * fretWidth + fretboardStartX // save fret positions for later when drawing FretNotes
             fretPositionsX.add(x)
             drawLine(
@@ -127,7 +129,10 @@ fun Fretboard(
         // draw notes
         for(fretNote in fretNotes) {
             if((fretNote.string) > numStrings) continue
+            if((fretNote.fret) > numFrets) continue
 
+            Log.d(",", "checking x at fret:${fretNote.fret}")
+            Log.d(",", "fretPositionX.size=${fretPositionsX.size}")
             var x = fretPositionsX.elementAt(fretNote.fret) - fretWidth / 2
             if(fretNote.fret == 0){
                 x = fretboardStartX

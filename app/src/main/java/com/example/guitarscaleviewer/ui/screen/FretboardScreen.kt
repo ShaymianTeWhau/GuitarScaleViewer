@@ -1,6 +1,5 @@
 package com.example.guitarscaleviewer.ui.screen
 
-import android.app.Dialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
@@ -139,6 +138,7 @@ fun FretboardScreen(
 // Previews
 val previewUiState: FretboardUiState = FretboardUiState(
     numStrings = 6,
+    numFrets = 12,
     fretNotes = createScale(
         tonicNote = "A#",
         intervals = setOf(

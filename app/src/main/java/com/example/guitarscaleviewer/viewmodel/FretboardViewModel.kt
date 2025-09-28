@@ -10,22 +10,29 @@ import kotlinx.coroutines.launch
 
 class FretboardViewModel : ViewModel() {
 
-    val exampleScale = createScale(
-        intervals = setOf(
-            Interval(1),
-            Interval(2),
-            Interval(3, IntervalModifier.FLAT),
-            Interval(4),
-            Interval(5),
-            Interval(6, IntervalModifier.FLAT),
-            Interval(7, IntervalModifier.FLAT),
-        )
-    )
     val uiState = MutableStateFlow(
         FretboardUiState(
-            fretNotes = exampleScale
         )
     )
+    init{
+        val newNumFrets = 24
+        uiState.value = FretboardUiState(
+            tonicNote = "A",
+            numFrets = newNumFrets,
+            fretNotes = createScale(
+                totalFrets = newNumFrets,
+                intervals = setOf(
+                    Interval(1),
+                    Interval(2),
+                    Interval(3, IntervalModifier.FLAT),
+                    Interval(4),
+                    Interval(5),
+                    Interval(6, IntervalModifier.FLAT),
+                    Interval(7, IntervalModifier.FLAT),
+                )
+            )
+        )
+    }
 
     // update state by creating a new state
     private inline fun update(crossinline block: (FretboardUiState) -> FretboardUiState) {
