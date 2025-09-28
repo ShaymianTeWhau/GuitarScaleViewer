@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,7 +38,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
-import com.example.guitarscaleviewer.model.MAJOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.MINOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.getScales
@@ -62,7 +60,7 @@ fun AppBar(
             OutlinedButton (
                 onClick = onShowScalePicker,
             ) {
-                Text("scale name")
+                Text(uiState.scale.name)
             }
             // key picker button
             OutlinedButton(onClick =  onShowKeyPicker) {
@@ -85,7 +83,7 @@ fun AppBar(
 }
 
 @Composable
-fun scalePicker(
+fun ScalePicker(
     visible: Boolean = false,
     onDismiss: () -> Unit,
     onScalePress: (Scale) -> Unit
@@ -128,7 +126,7 @@ fun scalePicker(
 }
 
 @Composable
-fun keyPicker(
+fun KeyPicker(
     visible: Boolean = false,
     onDismiss: () -> Unit,
     onKeyPress: (String) -> Unit
@@ -221,12 +219,12 @@ fun FretboardScreen(
             showScaleNum = uiState.showScaleNum
         )
     }
-    scalePicker(
+    ScalePicker(
         visible = showScalePicker,
         onDismiss = { showScalePicker = false },
         onScalePress = onScalePress
     )
-    keyPicker(
+    KeyPicker(
         visible = showKeyPicker,
         onDismiss = { showKeyPicker = false },
         onKeyPress = onKeyPress
