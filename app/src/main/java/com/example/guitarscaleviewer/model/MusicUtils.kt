@@ -66,7 +66,7 @@ fun createScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A
             var i = lastIntervalMatch
             var intervalMatchFound = false
             while(i < intervals.size){
-                if (curChromaticInterval.degree == intervals.elementAt(i).degree && curChromaticInterval.modifier == intervals.elementAt(i).modifier){
+                if (curChromaticInterval == intervals.elementAt(i)){
                     intervalMatchFound = true
                     lastIntervalMatch = i
                     fretNoteScale.add(newFretNote)
