@@ -1,9 +1,12 @@
 package com.example.guitarscaleviewer.viewmodel
 
 import com.example.guitarscaleviewer.model.FretNote
+import com.example.guitarscaleviewer.model.Scale
+import com.example.guitarscaleviewer.model.getScales
 
 data class FretboardUiState(
     val tonicNote: String = "C",
+    val scale: Scale = getScales().elementAt(0), // temp get first scale as default
     val tuning: List<String> = listOf("E", "A", "D", "G", "B", "E"),
     val numStrings: Int = 6,
     val numFrets: Int = 15,

@@ -3,6 +3,7 @@ package com.example.guitarscaleviewer.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.guitarscaleviewer.model.Interval
+import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.createFretNotesScale
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -46,5 +47,13 @@ class FretboardViewModel : ViewModel() {
             )
         ))
         }
+    }
+
+    fun updateScale(newScale: Scale) {
+        update { it.copy(scale = newScale, fretNotes = createFretNotesScale(
+            tonicNote = uiState.value.tonicNote,
+            totalFrets = uiState.value.numFrets,
+            intervals = newScale.intervals
+        )) }
     }
 }

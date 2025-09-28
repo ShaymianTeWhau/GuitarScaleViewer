@@ -41,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.MAJOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.MINOR_SCALE_EXAMPLE
+import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.getScales
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.viewmodel.FretboardUiState
@@ -87,7 +88,7 @@ fun AppBar(
 fun scalePicker(
     visible: Boolean = false,
     onDismiss: () -> Unit,
-    onScalePress: (String) -> Unit
+    onScalePress: (Scale) -> Unit
 ){
     if (!visible) return
     Dialog(
@@ -112,7 +113,7 @@ fun scalePicker(
                 ) {
                     items(allScales){ scale ->
                         OutlinedButton(
-                            onClick = {}
+                            onClick = { onScalePress(scale); onDismiss() }
                         ) {
                             Text(scale.name)
                         }
@@ -180,8 +181,9 @@ fun FretboardScreen(viewModel: FretboardViewModel){
 
     FretboardScreen(
         uiState = uiState,
+        onScalePress = viewModel::updateScale,
+        onKeyPress = viewModel::updateKey,
         onToggleShowScaleNum = { viewModel.toggleShowScaleNum() },
-        onKeyPress = viewModel::updateKey
     )
 }
 
@@ -189,8 +191,9 @@ fun FretboardScreen(viewModel: FretboardViewModel){
 @Composable
 fun FretboardScreen(
     uiState: FretboardUiState,
-    onToggleShowScaleNum: () -> Unit = {},
-    onKeyPress: (String) -> Unit = {}
+    onScalePress: (Scale) -> Unit = {},
+    onKeyPress: (String) -> Unit = {},
+    onToggleShowScaleNum: () -> Unit = {}
 ) {
     var showKeyPicker by rememberSaveable { mutableStateOf(false) }
     var showScalePicker by rememberSaveable { mutableStateOf(false) }
@@ -221,7 +224,7 @@ fun FretboardScreen(
     scalePicker(
         visible = showScalePicker,
         onDismiss = { showScalePicker = false },
-        onScalePress = {}
+        onScalePress = onScalePress
     )
     keyPicker(
         visible = showKeyPicker,
@@ -245,7 +248,7 @@ val previewUiState: FretboardUiState = FretboardUiState(
 )
 @Composable
 fun FretboardScreenPreviewHorizontal() {
-    FretboardScreen(previewUiState)
+    FretboardScreen(uiState = previewUiState)
 }
 
 @Preview(
@@ -256,6 +259,6 @@ fun FretboardScreenPreviewHorizontal() {
 )
 @Composable
 fun FretboardScreenPreviewVertical() {
-    FretboardScreen(previewUiState)
+    FretboardScreen(uiState = previewUiState)
 }
 
