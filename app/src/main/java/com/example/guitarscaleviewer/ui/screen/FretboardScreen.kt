@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.MINOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.getScales
+import com.example.guitarscaleviewer.model.loadScalesFromAssets
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.viewmodel.FretboardUiState
 import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
@@ -104,7 +106,7 @@ fun ScalePicker(
                     .fillMaxWidth()
                     .heightIn(min = 0.dp, max = 520.dp)
             ){
-                val allScales = getScales()
+                val allScales = loadScalesFromAssets(LocalContext.current)
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     modifier = Modifier.fillMaxWidth()
