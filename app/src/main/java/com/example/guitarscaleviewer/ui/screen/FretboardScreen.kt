@@ -108,7 +108,7 @@ fun ScalePicker(
             ){
                 val allScales = loadScalesFromAssets(LocalContext.current)
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
+                    columns = GridCells.Fixed(4),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     items(allScales){ scale ->
