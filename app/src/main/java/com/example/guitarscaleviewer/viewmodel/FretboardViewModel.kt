@@ -1,19 +1,28 @@
 package com.example.guitarscaleviewer.viewmodel
 
+import android.content.Context
+import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.guitarscaleviewer.model.Interval
 import com.example.guitarscaleviewer.model.Scale
+import com.example.guitarscaleviewer.model.allKeys
 import com.example.guitarscaleviewer.model.createFretNotesScale
+import com.example.guitarscaleviewer.model.loadScalesFromAssets
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class FretboardViewModel : ViewModel() {
+    private val _scales = MutableStateFlow<List<Scale>>(emptyList())
+    val scales: StateFlow<List<Scale>> = _scales
 
     val uiState = MutableStateFlow(
         FretboardUiState(
         )
     )
+
     init{
         val newNumFrets = 15
         val newTonicNote = "D"
@@ -55,5 +64,14 @@ class FretboardViewModel : ViewModel() {
             totalFrets = uiState.value.numFrets,
             intervals = newScale.intervals
         )) }
+    }
+
+    fun randomizeScaleAndKey() {
+        Log.d(",", "Random button pressed")
+        val keys = allKeys
+    }
+
+    fun setScales(scales: List<Scale>) {
+        _scales.value = scales
     }
 }

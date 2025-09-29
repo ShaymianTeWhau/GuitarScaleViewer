@@ -25,8 +25,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.MINOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.Scale
+import com.example.guitarscaleviewer.model.allKeys
 import com.example.guitarscaleviewer.model.getScales
 import com.example.guitarscaleviewer.model.loadScalesFromAssets
 import com.example.guitarscaleviewer.ui.components.Fretboard
@@ -51,6 +54,7 @@ import com.example.guitarscaleviewer.viewmodel.FretboardViewModel
 @Composable
 fun AppBar(
     uiState: FretboardUiState,
+    onRandom: () -> Unit,
     onShowScalePicker: () -> Unit,
     onShowKeyPicker: () -> Unit,
     onToggleShowScaleNum: () -> Unit
@@ -58,6 +62,12 @@ fun AppBar(
     TopAppBar(
         title = { Text("GSViewer") },
         actions = {
+            // random button
+            OutlinedButton(
+                onClick = onRandom
+            ) {
+                Text("Randomize")
+            }
             // scale picker button
             OutlinedButton (
                 onClick = onShowScalePicker,
@@ -150,7 +160,7 @@ fun KeyPicker(
                     .fillMaxWidth()
                     .heightIn(min = 0.dp, max = 520.dp)
             ){
-                val keys = listOf("C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B")
+                val keys = allKeys
                 LazyRow(
                     Modifier
                         .fillMaxWidth()
@@ -178,9 +188,16 @@ fun KeyPicker(
 @Composable
 fun FretboardScreen(viewModel: FretboardViewModel){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val scales = remember { loadScalesFromAssets(context) }
+
+    LaunchedEffect(Unit){
+        viewModel.setScales(scales)
+    }
 
     FretboardScreen(
         uiState = uiState,
+        onRandom = { viewModel.randomizeScaleAndKey() },
         onScalePress = viewModel::updateScale,
         onKeyPress = viewModel::updateKey,
         onToggleShowScaleNum = { viewModel.toggleShowScaleNum() },
@@ -191,6 +208,7 @@ fun FretboardScreen(viewModel: FretboardViewModel){
 @Composable
 fun FretboardScreen(
     uiState: FretboardUiState,
+    onRandom: () -> Unit = {},
     onScalePress: (Scale) -> Unit = {},
     onKeyPress: (String) -> Unit = {},
     onToggleShowScaleNum: () -> Unit = {}
@@ -203,6 +221,7 @@ fun FretboardScreen(
         topBar = {
             AppBar(
                 uiState = uiState,
+                onRandom = onRandom,
                 onShowScalePicker = {showScalePicker = true},
                 onShowKeyPicker = {showKeyPicker = true},
                 onToggleShowScaleNum = onToggleShowScaleNum

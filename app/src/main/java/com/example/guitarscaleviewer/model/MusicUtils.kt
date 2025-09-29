@@ -28,6 +28,8 @@ val MAJOR_SCALE_EXAMPLE = createFretNotesScale(
     )
 )
 
+val allKeys = listOf("C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B")
+
 fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A", "D", "G", "B", "E"), tonicNote:String = "C", intervals:Set<Interval>): Set<FretNote> {
     val fretNoteScale: MutableSet<FretNote> = mutableSetOf()
 
