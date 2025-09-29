@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class FretboardViewModel : ViewModel() {
     private val _scales = MutableStateFlow<List<Scale>>(emptyList())
-    val scales: StateFlow<List<Scale>> = _scales
+    private val scales: StateFlow<List<Scale>> = _scales
 
     val uiState = MutableStateFlow(
         FretboardUiState(
@@ -67,8 +67,19 @@ class FretboardViewModel : ViewModel() {
     }
 
     fun randomizeScaleAndKey() {
-        Log.d(",", "Random button pressed")
-        val keys = allKeys
+        val newKey = allKeys.random()
+        val newScale = scales.value.random()
+
+        update { it.copy(
+            scale = newScale,
+            tonicNote = newKey,
+            fretNotes = createFretNotesScale(
+                totalFrets = uiState.value.numFrets,
+                stringTuning = uiState.value.tuning,
+                tonicNote = newKey,
+                intervals = newScale.intervals
+            )
+        ) }
     }
 
     fun setScales(scales: List<Scale>) {
