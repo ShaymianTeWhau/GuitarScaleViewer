@@ -66,7 +66,7 @@ fun AppBar(
     onShowSettings: () -> Unit
 ){
     TopAppBar(
-        title = { Text("GSViewer") },
+        title = { Text("GSViewer: ${uiState.instrument.displayName}") },
         actions = {
             // random button
             OutlinedButton(
@@ -203,6 +203,7 @@ fun SettingsMenu(
     uiState: FretboardUiState,
     visible: Boolean = false,
     onDismiss: () -> Unit,
+    onInstrumentPress: (String) -> Unit,
     onStringCountChange: (Int) -> Unit,
     onFretCountChange: (Int) -> Unit
 ){
@@ -211,14 +212,14 @@ fun SettingsMenu(
     val instrumentOptions = listOf("Guitar", "Bass")
     val bassStringOptions = listOf("4", "5", "6")
     val guitarStringOptions = listOf("6", "7", "8")
-    var stringOptions = guitarStringOptions
+    var stringOptions = if(uiState.instrument.displayName == "Guitar") guitarStringOptions else bassStringOptions
     val fretOptions = listOf("15", "22", "24")
 
     var instrumentsExpanded by remember { mutableStateOf(false) }
     var stringsExpanded by remember{ mutableStateOf(false) }
     var fretsExpanded by remember{ mutableStateOf(false) }
 
-    var selectedInstrument by remember { mutableStateOf("Guitar") }
+    var selectedInstrument by remember { mutableStateOf(uiState.instrument.displayName) }
     var selectedStrings by remember { mutableStateOf(uiState.numStrings.toString()) }
     var selectedFrets by remember { mutableStateOf(uiState.numFrets.toString()) }
 
@@ -264,7 +265,7 @@ fun SettingsMenu(
                                 text = { Text(option) },
                                 onClick = {
                                     selectedInstrument = option
-                                    // onInstrumentPress(option)
+                                    onInstrumentPress(option)
                                     if(option == "Guitar"){
                                         stringOptions = guitarStringOptions
                                         selectedStrings = "6"
@@ -367,6 +368,7 @@ fun FretboardScreen(viewModel: FretboardViewModel){
         onScalePress = viewModel::updateScale,
         onKeyPress = viewModel::updateKey,
         onToggleShowScaleNum = { viewModel.toggleShowScaleNum() },
+        onInstrumentPress = viewModel::updateInstrument,
         onStringCountChange = viewModel::updateStringCount,
         onFretCountChange = viewModel::updateFretCount
     )
@@ -380,6 +382,7 @@ fun FretboardScreen(
     onScalePress: (Scale) -> Unit = {},
     onKeyPress: (String) -> Unit = {},
     onToggleShowScaleNum: () -> Unit = {},
+    onInstrumentPress: (String) -> Unit = {},
     onStringCountChange: (Int) -> Unit = {},
     onFretCountChange: (Int) -> Unit = {}
 ) {
@@ -426,6 +429,7 @@ fun FretboardScreen(
         uiState = uiState,
         visible = showSettings,
         onDismiss = { showSettings = false },
+        onInstrumentPress = onInstrumentPress,
         onStringCountChange = onStringCountChange,
         onFretCountChange = onFretCountChange
     )

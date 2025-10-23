@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.guitarscaleviewer.model.Instrument
 import com.example.guitarscaleviewer.model.Interval
 import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.allKeys
@@ -121,5 +122,33 @@ class FretboardViewModel : ViewModel() {
                 intervals = uiState.value.scale.intervals
             )
         ) }
+    }
+
+    fun updateInstrument(instrumentStr: String) {
+        var newInstrument: Instrument
+        var newStringCount: Int
+        var newTuning: List<String>
+
+        if(instrumentStr == "Guitar"){
+            newInstrument = Instrument.GUITAR
+            newStringCount = 6
+            newTuning = listOf("E", "A", "D", "G", "B", "E")
+        }else{
+            newInstrument = Instrument.BASS
+            newStringCount = 4
+            newTuning = listOf("E", "A", "D", "G")
+        }
+
+        update { it.copy(
+            instrument = newInstrument,
+            tuning = newTuning,
+            numStrings = newStringCount,
+            fretNotes = createFretNotesScale(
+                totalFrets = uiState.value.numFrets,
+                stringTuning = newTuning,
+                tonicNote = uiState.value.tonicNote,
+                intervals = uiState.value.scale.intervals
+            )
+            ) }
     }
 }
