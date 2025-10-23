@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -76,12 +77,16 @@ fun AppBar(
             }
             // scale picker button
             OutlinedButton (
+                modifier = Modifier.width(200.dp),
                 onClick = onShowScalePicker,
             ) {
                 Text(uiState.scale.name)
             }
             // key picker button
-            OutlinedButton(onClick =  onShowKeyPicker) {
+            OutlinedButton(
+                modifier = Modifier.width(85.dp),
+                onClick = onShowKeyPicker
+            ) {
                 Text(uiState.tonicNote)
             }
             // scale num toggle button
