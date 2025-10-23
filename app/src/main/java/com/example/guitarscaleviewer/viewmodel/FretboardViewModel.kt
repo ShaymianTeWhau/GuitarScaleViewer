@@ -19,8 +19,7 @@ class FretboardViewModel : ViewModel() {
     private val scales: StateFlow<List<Scale>> = _scales
 
     val uiState = MutableStateFlow(
-        FretboardUiState(
-        )
+        FretboardUiState()
     )
 
     init{
@@ -44,6 +43,7 @@ class FretboardViewModel : ViewModel() {
     fun updateKey(newKey: String)  {
         update { it.copy(tonicNote = newKey, fretNotes = createFretNotesScale(
             tonicNote = newKey,
+            stringTuning = uiState.value.tuning,
             totalFrets = uiState.value.numFrets,
             intervals = setOf(
                 Interval(1),
@@ -59,11 +59,15 @@ class FretboardViewModel : ViewModel() {
     }
 
     fun updateScale(newScale: Scale) {
-        update { it.copy(scale = newScale, fretNotes = createFretNotesScale(
-            tonicNote = uiState.value.tonicNote,
-            totalFrets = uiState.value.numFrets,
-            intervals = newScale.intervals
-        )) }
+        update { it.copy(
+            scale = newScale,
+            fretNotes = createFretNotesScale(
+                tonicNote = uiState.value.tonicNote,
+                stringTuning = uiState.value.tuning,
+                totalFrets = uiState.value.numFrets,
+                intervals = newScale.intervals
+            )
+        ) }
     }
 
     fun randomizeScaleAndKey() {
@@ -87,11 +91,20 @@ class FretboardViewModel : ViewModel() {
     }
 
     fun updateStringCount(stringCount: Int) {
+        // ToDo: Refactor bass/guitar logic
+        var newTuning  = listOf("F#", "B", "E", "A", "D", "G", "B", "E")
+        if(stringCount >= 6){
+            newTuning = newTuning.takeLast(stringCount)
+        }else{
+            newTuning = newTuning.dropLast(2)
+            newTuning = newTuning.takeLast(stringCount)
+        }
+        uiState.value.tuning = newTuning
         update { it.copy(
             numStrings = stringCount,
             fretNotes = createFretNotesScale(
                 totalFrets = uiState.value.numFrets,
-                stringTuning = uiState.value.tuning,
+                stringTuning = newTuning,
                 tonicNote = uiState.value.tonicNote,
                 intervals = uiState.value.scale.intervals
             )

@@ -1,5 +1,6 @@
 package com.example.guitarscaleviewer.model
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 
 val MINOR_SCALE_EXAMPLE = createFretNotesScale(
@@ -31,10 +32,14 @@ val MAJOR_SCALE_EXAMPLE = createFretNotesScale(
 val allKeys = listOf("C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B")
 
 fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A", "D", "G", "B", "E"), tonicNote:String = "C", intervals:Set<Interval>): Set<FretNote> {
+    Log.d(",","createFretNotesScale for tuning: $stringTuning - tonic:$tonicNote")
     val fretNoteScale: MutableSet<FretNote> = mutableSetOf()
 
     val useFlats:Boolean = tonicNote.endsWith('b')
-    val allNotes = if(useFlats) setOf("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B") else setOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+    val flats = listOf("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B")
+    val sharps = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+    val allNotes = if(useFlats) flats else sharps
+
     val allChromaticIntervals = setOf(
         Interval(1),
         Interval(2, IntervalModifier.FLAT),
@@ -50,13 +55,29 @@ fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listO
         Interval(7)
     )
 
+    val noteIndex: Map<String, Int> = mapOf(
+        "C" to 0,
+        "C#" to 1, "Db" to 1,
+        "D" to 2,
+        "D#" to 3, "Eb" to 3,
+        "E" to 4,
+        "F" to 5,
+        "F#" to 6, "Gb" to 6,
+        "G" to 7,
+        "G#" to 8, "Ab" to 8,
+        "A" to 9,
+        "A#" to 10, "Bb" to 10,
+        "B" to 11
+    )
+
     // create FretNotes for whole fretboard
     val chromaticFretNotes: MutableSet<FretNote> = mutableSetOf() // a chromatic scale contains all notes
     var stringNumber = 1
     for(openStringNote in stringTuning.reversed()){
         var curFret = 0
         var curNote = openStringNote
-        val openStringNoteIndex = allNotes.indexOf(openStringNote)
+        if (useFlats) curNote = flats[noteIndex[curNote]!!]
+        val openStringNoteIndex = allNotes.indexOf(curNote)
         val tonicNoteIndex = allNotes.indexOf(tonicNote)
         var lastIntervalMatch = 0
         while (curFret <= totalFrets){
@@ -110,6 +131,7 @@ fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listO
     }
 
     val result: Set<FretNote> = fretNoteScale
+    Log.d(",","createFretNotesScale finished")
     return result
 }
 
