@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,7 +19,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +50,6 @@ import com.example.guitarscaleviewer.R
 import com.example.guitarscaleviewer.model.MINOR_SCALE_EXAMPLE
 import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.allKeys
-import com.example.guitarscaleviewer.model.getScales
 import com.example.guitarscaleviewer.model.loadScalesFromAssets
 import com.example.guitarscaleviewer.ui.components.Fretboard
 import com.example.guitarscaleviewer.viewmodel.FretboardUiState
@@ -204,6 +200,7 @@ fun KeyPicker(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsMenu(
+    uiState: FretboardUiState,
     visible: Boolean = false,
     onDismiss: () -> Unit
 ){
@@ -215,8 +212,8 @@ fun SettingsMenu(
     var stringsExpanded by remember{ mutableStateOf(false) }
     var fretsExpanded by remember{ mutableStateOf(false) }
 
-    var selectedStrings by remember { mutableStateOf(stringOptions[2]) }
-    var selectedFrets by remember { mutableStateOf("15") }
+    var selectedStrings by remember { mutableStateOf(uiState.numStrings.toString()) }
+    var selectedFrets by remember { mutableStateOf(uiState.numFrets.toString()) }
 
     Dialog(
         onDismissRequest = {},
@@ -374,6 +371,7 @@ fun FretboardScreen(
         onKeyPress = onKeyPress
     )
     SettingsMenu(
+        uiState = uiState,
         visible = showSettings,
         onDismiss = { showSettings = false }
     )
