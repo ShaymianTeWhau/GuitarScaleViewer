@@ -1,13 +1,16 @@
 package com.example.guitarscaleviewer.ui.screen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,11 +18,15 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -59,7 +66,8 @@ fun AppBar(
     onRandom: () -> Unit,
     onShowScalePicker: () -> Unit,
     onShowKeyPicker: () -> Unit,
-    onToggleShowScaleNum: () -> Unit
+    onToggleShowScaleNum: () -> Unit,
+    onShowSettings: () -> Unit
 ){
     TopAppBar(
         title = { Text("GSViewer") },
@@ -90,7 +98,7 @@ fun AppBar(
                 )
             }
             // settings button
-            IconButton(onClick = {}) {
+            IconButton(onClick = onShowSettings) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
                     contentDescription = "Settings"
@@ -193,6 +201,110 @@ fun KeyPicker(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsMenu(
+    visible: Boolean = false,
+    onDismiss: () -> Unit
+){
+    if (!visible) return
+
+    val stringOptions = (4..8).map { it.toString() }
+    val fretOptions = listOf("15", "22", "24")
+
+    var stringsExpanded by remember{ mutableStateOf(false) }
+    var fretsExpanded by remember{ mutableStateOf(false) }
+
+    var selectedStrings by remember { mutableStateOf(stringOptions[2]) }
+    var selectedFrets by remember { mutableStateOf("15") }
+
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(0.9f),
+            shape = MaterialTheme.shapes.extraLarge,
+            tonalElevation = 6.dp
+        ){
+            Column(
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .heightIn(min = 0.dp, max = 520.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ){
+                Text("Instrument Options", style = MaterialTheme.typography.titleMedium)
+
+                // strings dropdown
+                Text("Strings: ", style = MaterialTheme.typography.titleSmall)
+                ExposedDropdownMenuBox(
+                    expanded = stringsExpanded,
+                    onExpandedChange = { stringsExpanded = !stringsExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedStrings,
+                        onValueChange = {},
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = stringsExpanded,
+                        onDismissRequest = { stringsExpanded = false }
+                    ) {
+                        stringOptions.forEach{ option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    selectedStrings = option
+                                    stringsExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // frets dropdown
+                Text("Frets:", style = MaterialTheme.typography.titleSmall)
+                ExposedDropdownMenuBox(
+                    expanded = fretsExpanded,
+                    onExpandedChange = { fretsExpanded = !fretsExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedFrets,
+                        onValueChange = {},
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = fretsExpanded,
+                        onDismissRequest = { fretsExpanded = false }
+                    ) {
+                        fretOptions.forEach{ option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    selectedFrets = option
+                                    fretsExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+                TextButton(onClick = onDismiss) {
+                    Text("Exit")
+                }
+            }
+        }
+    }
+}
+
 // viewModel aware composable
 @Composable
 fun FretboardScreen(viewModel: FretboardViewModel){
@@ -224,6 +336,7 @@ fun FretboardScreen(
 ) {
     var showKeyPicker by rememberSaveable { mutableStateOf(false) }
     var showScalePicker by rememberSaveable { mutableStateOf(false) }
+    var showSettings by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -233,7 +346,8 @@ fun FretboardScreen(
                 onRandom = onRandom,
                 onShowScalePicker = {showScalePicker = true},
                 onShowKeyPicker = {showKeyPicker = true},
-                onToggleShowScaleNum = onToggleShowScaleNum
+                onToggleShowScaleNum = onToggleShowScaleNum,
+                onShowSettings = {showSettings = true}
             )
         },
         contentWindowInsets = WindowInsets.safeDrawing
@@ -258,6 +372,10 @@ fun FretboardScreen(
         visible = showKeyPicker,
         onDismiss = { showKeyPicker = false },
         onKeyPress = onKeyPress
+    )
+    SettingsMenu(
+        visible = showSettings,
+        onDismiss = { showSettings = false }
     )
 }
 

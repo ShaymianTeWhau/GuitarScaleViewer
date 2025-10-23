@@ -25,7 +25,7 @@ class FretboardViewModel : ViewModel() {
 
     init{
         val newNumFrets = 15
-        val newTonicNote = "D"
+        val newTonicNote = "C"
         uiState.value = FretboardUiState(
             tonicNote = newTonicNote,
             numFrets = newNumFrets
