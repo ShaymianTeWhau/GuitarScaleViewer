@@ -202,7 +202,9 @@ fun KeyPicker(
 fun SettingsMenu(
     uiState: FretboardUiState,
     visible: Boolean = false,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    onStringCountChange: (Int) -> Unit,
+    onFretCountChange: (Int) -> Unit
 ){
     if (!visible) return
 
@@ -257,6 +259,7 @@ fun SettingsMenu(
                                 text = { Text(option) },
                                 onClick = {
                                     selectedStrings = option
+                                    onStringCountChange(option.toInt())
                                     stringsExpanded = false
                                 }
                             )
@@ -288,6 +291,7 @@ fun SettingsMenu(
                                 text = { Text(option) },
                                 onClick = {
                                     selectedFrets = option
+                                    onFretCountChange(option.toInt())
                                     fretsExpanded = false
                                 }
                             )
@@ -319,6 +323,8 @@ fun FretboardScreen(viewModel: FretboardViewModel){
         onScalePress = viewModel::updateScale,
         onKeyPress = viewModel::updateKey,
         onToggleShowScaleNum = { viewModel.toggleShowScaleNum() },
+        onStringCountChange = viewModel::updateStringCount,
+        onFretCountChange = viewModel::updateFretCount
     )
 }
 
@@ -329,7 +335,9 @@ fun FretboardScreen(
     onRandom: () -> Unit = {},
     onScalePress: (Scale) -> Unit = {},
     onKeyPress: (String) -> Unit = {},
-    onToggleShowScaleNum: () -> Unit = {}
+    onToggleShowScaleNum: () -> Unit = {},
+    onStringCountChange: (Int) -> Unit = {},
+    onFretCountChange: (Int) -> Unit = {}
 ) {
     var showKeyPicker by rememberSaveable { mutableStateOf(false) }
     var showScalePicker by rememberSaveable { mutableStateOf(false) }
@@ -373,7 +381,9 @@ fun FretboardScreen(
     SettingsMenu(
         uiState = uiState,
         visible = showSettings,
-        onDismiss = { showSettings = false }
+        onDismiss = { showSettings = false },
+        onStringCountChange = onStringCountChange,
+        onFretCountChange = onFretCountChange
     )
 }
 

@@ -85,4 +85,28 @@ class FretboardViewModel : ViewModel() {
     fun setScales(scales: List<Scale>) {
         _scales.value = scales
     }
+
+    fun updateStringCount(stringCount: Int) {
+        update { it.copy(
+            numStrings = stringCount,
+            fretNotes = createFretNotesScale(
+                totalFrets = uiState.value.numFrets,
+                stringTuning = uiState.value.tuning,
+                tonicNote = uiState.value.tonicNote,
+                intervals = uiState.value.scale.intervals
+            )
+        ) }
+    }
+
+    fun updateFretCount(fretCount: Int) {
+        update { it.copy(
+            numFrets = fretCount,
+            fretNotes = createFretNotesScale(
+                totalFrets = fretCount,
+                stringTuning = uiState.value.tuning,
+                tonicNote = uiState.value.tonicNote,
+                intervals = uiState.value.scale.intervals
+            )
+        ) }
+    }
 }
