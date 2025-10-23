@@ -135,6 +135,17 @@ fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listO
     return result
 }
 
+fun getTuningForInstrument(instrument: Instrument, stringCount: Int): List<String> {
+    var newTuning = listOf("F#", "B", "E", "A", "D", "G", "B", "E")
+
+    if(instrument == Instrument.BASS){
+        newTuning = newTuning.dropLast(2)
+    }
+
+    newTuning = newTuning.takeLast(stringCount)
+    return newTuning
+}
+
 fun getScales(): List<Scale> {
     // temp hard coded scales
     val majorScale = Scale(

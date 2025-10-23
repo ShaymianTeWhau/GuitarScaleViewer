@@ -1,8 +1,5 @@
 package com.example.guitarscaleviewer.viewmodel
 
-import android.content.Context
-import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.guitarscaleviewer.model.Instrument
@@ -10,7 +7,7 @@ import com.example.guitarscaleviewer.model.Interval
 import com.example.guitarscaleviewer.model.Scale
 import com.example.guitarscaleviewer.model.allKeys
 import com.example.guitarscaleviewer.model.createFretNotesScale
-import com.example.guitarscaleviewer.model.loadScalesFromAssets
+import com.example.guitarscaleviewer.model.getTuningForInstrument
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -91,18 +88,11 @@ class FretboardViewModel : ViewModel() {
         _scales.value = scales
     }
 
-    fun updateStringCount(stringCount: Int) {
-        // ToDo: Refactor bass/guitar logic
-        var newTuning  = listOf("F#", "B", "E", "A", "D", "G", "B", "E")
-        if(stringCount >= 6){
-            newTuning = newTuning.takeLast(stringCount)
-        }else{
-            newTuning = newTuning.dropLast(2)
-            newTuning = newTuning.takeLast(stringCount)
-        }
+    fun updateStringCount(newStringCount: Int) {
+        val newTuning  = getTuningForInstrument(uiState.value.instrument, newStringCount)
         uiState.value.tuning = newTuning
         update { it.copy(
-            numStrings = stringCount,
+            numStrings = newStringCount,
             fretNotes = createFretNotesScale(
                 totalFrets = uiState.value.numFrets,
                 stringTuning = newTuning,
@@ -132,12 +122,11 @@ class FretboardViewModel : ViewModel() {
         if(instrumentStr == "Guitar"){
             newInstrument = Instrument.GUITAR
             newStringCount = 6
-            newTuning = listOf("E", "A", "D", "G", "B", "E")
         }else{
             newInstrument = Instrument.BASS
             newStringCount = 4
-            newTuning = listOf("E", "A", "D", "G")
         }
+        newTuning = getTuningForInstrument(newInstrument, newStringCount)
 
         update { it.copy(
             instrument = newInstrument,
