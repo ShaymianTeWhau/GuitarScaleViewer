@@ -208,12 +208,17 @@ fun SettingsMenu(
 ){
     if (!visible) return
 
-    val stringOptions = (4..8).map { it.toString() }
+    val instrumentOptions = listOf("Guitar", "Bass")
+    val bassStringOptions = listOf("4", "5", "6")
+    val guitarStringOptions = listOf("6", "7", "8")
+    var stringOptions = guitarStringOptions
     val fretOptions = listOf("15", "22", "24")
 
+    var instrumentsExpanded by remember { mutableStateOf(false) }
     var stringsExpanded by remember{ mutableStateOf(false) }
     var fretsExpanded by remember{ mutableStateOf(false) }
 
+    var selectedInstrument by remember { mutableStateOf("Guitar") }
     var selectedStrings by remember { mutableStateOf(uiState.numStrings.toString()) }
     var selectedFrets by remember { mutableStateOf(uiState.numFrets.toString()) }
 
@@ -234,6 +239,45 @@ fun SettingsMenu(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ){
                 Text("Instrument Options", style = MaterialTheme.typography.titleMedium)
+
+                // instrument dropdown
+                Text("Instrument: ", style = MaterialTheme.typography.titleSmall)
+                ExposedDropdownMenuBox(
+                    expanded = instrumentsExpanded,
+                    onExpandedChange = { instrumentsExpanded = !instrumentsExpanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedInstrument,
+                        onValueChange = {},
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = instrumentsExpanded,
+                        onDismissRequest = { instrumentsExpanded = false }
+                    ) {
+                        instrumentOptions.forEach{ option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    selectedInstrument = option
+                                    // onInstrumentPress(option)
+                                    if(option == "Guitar"){
+                                        stringOptions = guitarStringOptions
+                                        selectedStrings = "6"
+                                    } else{
+                                        stringOptions = bassStringOptions
+                                        selectedStrings = "4"
+                                    }
+                                    instrumentsExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
 
                 // strings dropdown
                 Text("Strings: ", style = MaterialTheme.typography.titleSmall)
