@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -91,18 +93,21 @@ fun AppBar(
             }
             // scale num toggle button
             IconButton(onClick = onToggleShowScaleNum) {
+                val iconSize = if(uiState.showScaleNum) 40.dp else 30.dp
                 Icon(
                     painter = if(uiState.showScaleNum) {
                         painterResource(id = R.drawable.roman1)
                     } else painterResource(id = R.drawable.quarter_note),
-                    contentDescription = "Toggle notes/numbers"
+                    contentDescription = "Toggle notes/numbers",
+                    modifier = Modifier.size(iconSize)
                 )
             }
             // settings button
             IconButton(onClick = onShowSettings) {
                 Icon(
                     imageVector = Icons.Filled.Settings,
-                    contentDescription = "Settings"
+                    contentDescription = "Settings",
+                    modifier = Modifier.size(40.dp)
                 )
             }
         },
