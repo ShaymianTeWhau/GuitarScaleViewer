@@ -2,8 +2,10 @@ package com.example.guitarscaleviewer.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -16,6 +18,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenuItem
@@ -238,7 +242,9 @@ fun SettingsMenu(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth(0.9f),
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .fillMaxHeight(0.9f),
             shape = MaterialTheme.shapes.extraLarge,
             tonalElevation = 6.dp
         ){
@@ -246,7 +252,8 @@ fun SettingsMenu(
                 Modifier
                     .padding(20.dp)
                     .fillMaxWidth()
-                    .heightIn(min = 0.dp, max = 520.dp),
+                    .heightIn(min = 0.dp, max = 520.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ){
                 Text("Instrument Options", style = MaterialTheme.typography.titleMedium)
@@ -290,69 +297,90 @@ fun SettingsMenu(
                     }
                 }
 
-                // strings dropdown
-                Text("Strings: ", style = MaterialTheme.typography.titleSmall)
-                ExposedDropdownMenuBox(
-                    expanded = stringsExpanded,
-                    onExpandedChange = { stringsExpanded = !stringsExpanded },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    OutlinedTextField(
-                        readOnly = true,
-                        value = selectedStrings,
-                        onValueChange = {},
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ){
+                    Column(
                         modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = stringsExpanded,
-                        onDismissRequest = { stringsExpanded = false }
-                    ) {
-                        stringOptions.forEach{ option ->
-                            DropdownMenuItem(
-                                text = { Text(option) },
-                                onClick = {
-                                    selectedStrings = option
-                                    onStringCountChange(option.toInt())
-                                    stringsExpanded = false
-                                }
+                            .weight(1f)
+                            .padding(end = 8.dp)
+                    ){
+                        // strings dropdown
+                        Text("Strings: ", style = MaterialTheme.typography.titleSmall)
+                        ExposedDropdownMenuBox(
+                            expanded = stringsExpanded,
+                            onExpandedChange = { stringsExpanded = !stringsExpanded },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            OutlinedTextField(
+                                readOnly = true,
+                                value = selectedStrings,
+                                onValueChange = {},
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
                             )
+                            ExposedDropdownMenu(
+                                expanded = stringsExpanded,
+                                onDismissRequest = { stringsExpanded = false }
+                            ) {
+                                stringOptions.forEach{ option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option) },
+                                        onClick = {
+                                            selectedStrings = option
+                                            onStringCountChange(option.toInt())
+                                            stringsExpanded = false
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
+                    Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                            ){
+
+                        // frets dropdown
+                        Text("Frets:", style = MaterialTheme.typography.titleSmall)
+                        ExposedDropdownMenuBox(
+                            expanded = fretsExpanded,
+                            onExpandedChange = { fretsExpanded = !fretsExpanded },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            OutlinedTextField(
+                                readOnly = true,
+                                value = selectedFrets,
+                                onValueChange = {},
+                                modifier = Modifier
+                                    .menuAnchor()
+                                    .fillMaxWidth()
+                            )
+                            ExposedDropdownMenu(
+                                expanded = fretsExpanded,
+                                onDismissRequest = { fretsExpanded = false }
+                            ) {
+                                fretOptions.forEach{ option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option) },
+                                        onClick = {
+                                            selectedFrets = option
+                                            onFretCountChange(option.toInt())
+                                            fretsExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
                 }
 
-                // frets dropdown
-                Text("Frets:", style = MaterialTheme.typography.titleSmall)
-                ExposedDropdownMenuBox(
-                    expanded = fretsExpanded,
-                    onExpandedChange = { fretsExpanded = !fretsExpanded },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    OutlinedTextField(
-                        readOnly = true,
-                        value = selectedFrets,
-                        onValueChange = {},
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth()
-                    )
-                    ExposedDropdownMenu(
-                        expanded = fretsExpanded,
-                        onDismissRequest = { fretsExpanded = false }
-                    ) {
-                        fretOptions.forEach{ option ->
-                            DropdownMenuItem(
-                                text = { Text(option) },
-                                onClick = {
-                                    selectedFrets = option
-                                    onFretCountChange(option.toInt())
-                                    fretsExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
+
                 TextButton(onClick = onDismiss) {
                     Text("Exit")
                 }
