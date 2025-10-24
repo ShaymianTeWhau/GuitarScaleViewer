@@ -21,6 +21,7 @@ class FretboardViewModel : ViewModel() {
         FretboardUiState()
     )
 
+    // initialize with default state
     init{
         val newNumFrets = 15
         val newTonicNote = "C"
@@ -37,8 +38,10 @@ class FretboardViewModel : ViewModel() {
         }
     }
 
+    // toggle scale values / numbers
     fun toggleShowScaleNum() = update { it.copy(showScaleNum = !it.showScaleNum) }
 
+    // update uiState with new key
     fun updateKey(newKey: String)  {
         val newFretNotes: Set<FretNote>
         if(uiState.value.scale.name == "None"){
@@ -63,6 +66,7 @@ class FretboardViewModel : ViewModel() {
         }
     }
 
+    // update uiState with new scale
     fun updateScale(newScale: Scale) {
         update { it.copy(
             scale = newScale,
@@ -75,6 +79,7 @@ class FretboardViewModel : ViewModel() {
         ) }
     }
 
+    // update uiState with new key
     fun randomizeScaleAndKey() {
         val newKey = allKeys.random()
         val newScale = scales.value.random()
@@ -91,10 +96,12 @@ class FretboardViewModel : ViewModel() {
         ) }
     }
 
+    // update uiState with new scale
     fun setScales(scales: List<Scale>) {
         _scales.value = scales
     }
 
+    // update uiState with new number of Strings
     fun updateStringCount(newStringCount: Int) {
         val newTuning  = getTuningForInstrument(uiState.value.instrument, newStringCount)
         uiState.value.tuning = newTuning
@@ -109,6 +116,7 @@ class FretboardViewModel : ViewModel() {
         ) }
     }
 
+    // update uiState with new number of frets
     fun updateFretCount(fretCount: Int) {
         update { it.copy(
             numFrets = fretCount,
@@ -121,6 +129,7 @@ class FretboardViewModel : ViewModel() {
         ) }
     }
 
+    // switch between Guitar and Bass
     fun updateInstrument(instrumentStr: String) {
         var newInstrument: Instrument
         var newStringCount: Int

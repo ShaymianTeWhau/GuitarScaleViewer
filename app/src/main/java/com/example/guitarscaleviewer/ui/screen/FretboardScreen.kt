@@ -121,6 +121,7 @@ fun AppBar(
     )
 }
 
+// scale picker dialog box
 @Composable
 fun ScalePicker(
     visible: Boolean = false,
@@ -143,7 +144,7 @@ fun ScalePicker(
                     .fillMaxWidth()
                     .heightIn(min = 0.dp, max = 520.dp)
             ){
-                val allScales = loadScalesFromAssets(LocalContext.current)
+                val allScales = loadScalesFromAssets(LocalContext.current) // gets all scale options
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier.fillMaxWidth()
@@ -164,6 +165,7 @@ fun ScalePicker(
     }
 }
 
+// key picker dialog box
 @Composable
 fun KeyPicker(
     visible: Boolean = false,
@@ -187,7 +189,7 @@ fun KeyPicker(
                     .fillMaxWidth()
                     .heightIn(min = 0.dp, max = 520.dp)
             ){
-                val keys = allKeys
+                val keys = allKeys // gets all key options
                 LazyRow(
                     Modifier
                         .fillMaxWidth()
@@ -211,6 +213,7 @@ fun KeyPicker(
     }
 }
 
+// settings menu dialog box
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsMenu(
@@ -223,16 +226,19 @@ fun SettingsMenu(
 ){
     if (!visible) return
 
+    // options for each dropdown menu
     val instrumentOptions = listOf("Guitar", "Bass")
     val bassStringOptions = listOf("4", "5", "6")
     val guitarStringOptions = listOf("6", "7", "8")
     var stringOptions = if(uiState.instrument.displayName == "Guitar") guitarStringOptions else bassStringOptions
     val fretOptions = listOf("15", "22", "24")
 
+    // dropdown menu expanded state
     var instrumentsExpanded by remember { mutableStateOf(false) }
     var stringsExpanded by remember{ mutableStateOf(false) }
     var fretsExpanded by remember{ mutableStateOf(false) }
 
+    // dropdown menu current selection
     var selectedInstrument by remember { mutableStateOf(uiState.instrument.displayName) }
     var selectedStrings by remember { mutableStateOf(uiState.numStrings.toString()) }
     var selectedFrets by remember { mutableStateOf(uiState.numFrets.toString()) }
@@ -424,6 +430,7 @@ fun FretboardScreen(
     onStringCountChange: (Int) -> Unit = {},
     onFretCountChange: (Int) -> Unit = {}
 ) {
+    // visibility state of dialog box's
     var showKeyPicker by rememberSaveable { mutableStateOf(false) }
     var showScalePicker by rememberSaveable { mutableStateOf(false) }
     var showSettings by rememberSaveable { mutableStateOf(false) }
@@ -453,6 +460,8 @@ fun FretboardScreen(
             showScaleNum = uiState.showScaleNum
         )
     }
+
+    // dialog box's
     ScalePicker(
         visible = showScalePicker,
         onDismiss = { showScalePicker = false },

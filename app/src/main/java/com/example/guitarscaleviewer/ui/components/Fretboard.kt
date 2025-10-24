@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.guitarscaleviewer.model.FretNote
 
+// fretboard diagram representing strings and frets with fretNotes (circles)
 @Composable
 fun Fretboard(
     modifier: Modifier = Modifier
@@ -178,6 +179,7 @@ fun Fretboard(
     }
 }
 
+// Previews
 val exampleFretNotes = setOf(
     FretNote(fret = 8, string = 6, note = "C", scaleNum = "1"),
     FretNote(fret = 10, string = 5, note = "G", scaleNum = "5"),

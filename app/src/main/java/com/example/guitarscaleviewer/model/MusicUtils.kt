@@ -3,6 +3,7 @@ package com.example.guitarscaleviewer.model
 import android.util.Log
 import androidx.compose.ui.graphics.Color
 
+// only used for Previews
 val MINOR_SCALE_EXAMPLE = createFretNotesScale(
     tonicNote = "E",
     intervals = setOf(
@@ -16,6 +17,7 @@ val MINOR_SCALE_EXAMPLE = createFretNotesScale(
     )
 )
 
+// only used for Previews
 val MAJOR_SCALE_EXAMPLE = createFretNotesScale(
     tonicNote = "C",
     intervals = setOf(
@@ -29,10 +31,12 @@ val MAJOR_SCALE_EXAMPLE = createFretNotesScale(
     )
 )
 
+// all possible musical keys
 val allKeys = listOf("C", "C#", "Db", "D", "Eb", "E", "F", "F#", "Gb", "G", "Ab", "A", "Bb", "B")
 
+// creates all fretNotes for a scale on an instrument with a given tuning
+// in other-words, creates all the circles on the diagram
 fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listOf("E", "A", "D", "G", "B", "E"), tonicNote:String = "C", intervals:Set<Interval>): Set<FretNote> {
-    Log.d(",","createFretNotesScale for tuning: $stringTuning - tonic:$tonicNote")
     val fretNoteScale: MutableSet<FretNote> = mutableSetOf()
 
     val useFlats:Boolean = tonicNote.endsWith('b')
@@ -73,6 +77,8 @@ fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listO
     // create FretNotes for whole fretboard
     val chromaticFretNotes: MutableSet<FretNote> = mutableSetOf() // a chromatic scale contains all notes
     var stringNumber = 1
+
+    // work-through each string in reversed order
     for(openStringNote in stringTuning.reversed()){
         var curFret = 0
         var curNote = openStringNote
@@ -80,6 +86,8 @@ fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listO
         val openStringNoteIndex = allNotes.indexOf(curNote)
         val tonicNoteIndex = allNotes.indexOf(tonicNote)
         var lastIntervalMatch = 0
+
+        // work-through each fret on this string
         while (curFret <= totalFrets){
 
             // calc current note
@@ -131,10 +139,10 @@ fun createFretNotesScale(totalFrets: Int = 15, stringTuning:List<String> = listO
     }
 
     val result: Set<FretNote> = fretNoteScale
-    Log.d(",","createFretNotesScale finished")
     return result
 }
 
+// returns open string notes for a given instrument and stringCount
 fun getTuningForInstrument(instrument: Instrument, stringCount: Int): List<String> {
     var newTuning = listOf("F#", "B", "E", "A", "D", "G", "B", "E")
 
@@ -144,35 +152,4 @@ fun getTuningForInstrument(instrument: Instrument, stringCount: Int): List<Strin
 
     newTuning = newTuning.takeLast(stringCount)
     return newTuning
-}
-
-fun getScales(): List<Scale> {
-    // temp hard coded scales
-    val majorScale = Scale(
-        name = "Ionian (Major)",
-        intervals = setOf(
-            Interval(1),
-            Interval(2),
-            Interval(3),
-            Interval(4),
-            Interval(5),
-            Interval(6),
-            Interval(7)
-        )
-    )
-
-    val minorScale = Scale(
-        name = "Aeolian (minor)",
-        intervals = setOf(
-            Interval(1),
-            Interval(2),
-            Interval(3, IntervalModifier.FLAT),
-            Interval(4),
-            Interval(5),
-            Interval(6, IntervalModifier.FLAT),
-            Interval(7, IntervalModifier.FLAT),
-        )
-    )
-
-    return listOf(majorScale, minorScale)
 }

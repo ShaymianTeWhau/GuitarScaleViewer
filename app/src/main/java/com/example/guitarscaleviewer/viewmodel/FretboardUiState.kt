@@ -3,7 +3,6 @@ package com.example.guitarscaleviewer.viewmodel
 import com.example.guitarscaleviewer.model.FretNote
 import com.example.guitarscaleviewer.model.Instrument
 import com.example.guitarscaleviewer.model.Scale
-import com.example.guitarscaleviewer.model.getScales
 
 data class FretboardUiState(
     val tonicNote: String = "C",
