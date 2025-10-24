@@ -131,9 +131,8 @@ class FretboardViewModel : ViewModel() {
 
     // switch between Guitar and Bass
     fun updateInstrument(instrumentStr: String) {
-        var newInstrument: Instrument
-        var newStringCount: Int
-        var newTuning: List<String>
+        val newInstrument: Instrument
+        val newStringCount: Int
 
         if(instrumentStr == "Guitar"){
             newInstrument = Instrument.GUITAR
@@ -142,7 +141,7 @@ class FretboardViewModel : ViewModel() {
             newInstrument = Instrument.BASS
             newStringCount = 4
         }
-        newTuning = getTuningForInstrument(newInstrument, newStringCount)
+        val newTuning: List<String> = getTuningForInstrument(newInstrument, newStringCount)
 
         update { it.copy(
             instrument = newInstrument,

@@ -1,7 +1,5 @@
 package com.example.guitarscaleviewer.model
 
-import android.util.Log
-
 // intervals come in 3 kinds - flat, natural and sharp.
 enum class IntervalModifier(val offset: Int){
     FLAT(-1), // lowers by 1 semitone (or 1 fret)

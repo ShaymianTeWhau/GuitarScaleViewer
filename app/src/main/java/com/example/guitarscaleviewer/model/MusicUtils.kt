@@ -1,6 +1,5 @@
 package com.example.guitarscaleviewer.model
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 
 // only used for Previews

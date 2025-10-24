@@ -1,7 +1,6 @@
 package com.example.guitarscaleviewer.ui.components
 
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
@@ -49,7 +48,7 @@ fun Fretboard(
         val canvasWidth = size.width
         val canvasHeight = size.height
 
-        val nutToFretWidthRatio = 0.3f;
+        val nutToFretWidthRatio = 0.3f
         val fretWidth = canvasWidth / (nutToFretWidthRatio + numFrets)
 
         // draw nut
