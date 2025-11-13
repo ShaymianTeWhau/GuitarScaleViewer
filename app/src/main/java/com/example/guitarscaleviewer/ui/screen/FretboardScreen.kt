@@ -78,21 +78,21 @@ fun AppBar(
             OutlinedButton(
                 onClick = onRandom
             ) {
-                Text("Randomize")
+                Text(text = "Randomize", color = Color.Black)
             }
             // scale picker button
             OutlinedButton (
                 modifier = Modifier.width(200.dp),
                 onClick = onShowScalePicker,
             ) {
-                Text(uiState.scale.name)
+                Text(text = uiState.scale.name, color = Color.Black)
             }
             // key picker button
             OutlinedButton(
                 modifier = Modifier.width(85.dp),
                 onClick = onShowKeyPicker
             ) {
-                Text(uiState.tonicNote)
+                Text(text = uiState.tonicNote, color = Color.Black)
             }
             // scale num toggle button
             IconButton(onClick = onToggleShowScaleNum) {
@@ -115,7 +115,11 @@ fun AppBar(
             }
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.LightGray
+            containerColor = Color.LightGray,
+            titleContentColor = Color.Black,
+            navigationIconContentColor = Color.Black,
+            actionIconContentColor = Color.Black
+
         )
     )
 }
